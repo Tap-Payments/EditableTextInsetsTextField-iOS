@@ -5,11 +5,11 @@
 //  Copyright © 2018 Tap Payments. All rights reserved.
 //
 
-import struct CoreGraphics.CGBase.CGFloat
-import struct CoreGraphics.CGGeometry.CGRect
-import struct UIKit.UIGeometry.UIEdgeInsets
-import class UIKit.UIPasteboard.UIPasteboard
-import class UIKit.UITextInput.UITextPosition
+import struct   CoreGraphics.CGBase.CGFloat
+import struct   CoreGraphics.CGGeometry.CGRect
+import struct   UIKit.UIGeometry.UIEdgeInsets
+import class    UIKit.UIPasteboard.UIPasteboard
+import class    UIKit.UITextInput.UITextPosition
 
 /*!
  Describes position of clear button.

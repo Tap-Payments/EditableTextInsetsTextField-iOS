@@ -5,10 +5,10 @@
 //  Copyright © 2018 Tap Payments. All rights reserved.
 //
 
-import struct TapAdditionsKit.LocaleAdditions
-import class UIKit.UITextField.UITextField
-import class UIKit.UITextInput.UITextInputMode
-import class UIKit.UITextInput.UITextRange
+import struct   TapAdditionsKit.LocaleAdditions
+import class    UIKit.UITextField.UITextField
+import class    UIKit.UITextInput.UITextInputMode
+import class    UIKit.UITextInput.UITextRange
 
 /// Base UITextField subclass.
 open class TextField: UITextField {
