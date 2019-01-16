@@ -2,10 +2,10 @@
 //  TextField.swift
 //  EditableTextInsetsTextField
 //
-//  Copyright © 2018 Tap Payments. All rights reserved.
+//  Copyright © 2019 Tap Payments. All rights reserved.
 //
 
-import struct   TapAdditionsKit.LocaleAdditions
+import struct	TapAdditionsKit.Locale
 import class    UIKit.UITextField.UITextField
 import class    UIKit.UITextInput.UITextInputMode
 import class    UIKit.UITextInput.UITextRange
@@ -17,7 +17,7 @@ open class TextField: UITextField {
     // MARK: Properties
 
     /// Preferred language.
-    public var preferredKeyboardLanguage: String = Locale.LocaleIdentifier.en
+    public var preferredKeyboardLanguage: String = Locale.TapLocaleIdentifier.en
 
     /// Returns whole text range.
     public var textRange: UITextRange? {
@@ -31,7 +31,7 @@ open class TextField: UITextField {
 
             guard let language = inputMode.primaryLanguage else { continue }
 
-            if Locale.primaryLocaleIdentifier(from: language) == self.preferredKeyboardLanguage {
+            if Locale.tap_primaryLocaleIdentifier(from: language) == self.preferredKeyboardLanguage {
 
                 return inputMode
             }
@@ -50,7 +50,7 @@ open class TextField: UITextField {
     @discardableResult open override func resignFirstResponder() -> Bool {
 
         let resigned = super.resignFirstResponder()
-        self.layout()
+        self.tap_layout()
 
         return resigned
     }

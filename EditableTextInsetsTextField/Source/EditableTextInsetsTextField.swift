@@ -2,7 +2,7 @@
 //  EditableTextInsetsTextField.swift
 //  EditableTextInsetsTextField
 //
-//  Copyright © 2018 Tap Payments. All rights reserved.
+//  Copyright © 2019 Tap Payments. All rights reserved.
 //
 
 import struct   CoreGraphics.CGBase.CGFloat
@@ -11,29 +11,30 @@ import struct   UIKit.UIGeometry.UIEdgeInsets
 import class    UIKit.UIPasteboard.UIPasteboard
 import class    UIKit.UITextInput.UITextPosition
 
-/*!
- Describes position of clear button.
- 
- - Left:  Clear button is on the left.
- - Right: Clear button is on the right.
- */
-public enum TextFieldClearButtonPosition {
-
-    case left
-    case right
-}
-
 /// Editable text insets text field.
 public class EditableTextInsetsTextField: TextField {
 
     // MARK: - Public -
+
+	/*!
+	Describes position of clear button.
+	
+	- Left:  Clear button is on the left.
+	- Right: Clear button is on the right.
+	*/
+	public enum ClearButtonPosition {
+
+		case left
+		case right
+	}
+
     // MARK: Properties
 
-    public var clearButtonPosition: TextFieldClearButtonPosition = .right {
+    public var clearButtonPosition: ClearButtonPosition = .right {
 
         didSet {
 
-            self.layout()
+            self.tap_layout()
         }
     }
 
@@ -42,7 +43,7 @@ public class EditableTextInsetsTextField: TextField {
 
         didSet {
 
-            self.layout()
+            self.tap_layout()
         }
     }
 
@@ -51,7 +52,7 @@ public class EditableTextInsetsTextField: TextField {
 
         didSet {
 
-            self.layout()
+            self.tap_layout()
         }
     }
 
@@ -86,7 +87,7 @@ public class EditableTextInsetsTextField: TextField {
     public override func editingRect(forBounds aBounds: CGRect) -> CGRect {
 
         var textRect = self.textRect(forBounds: aBounds)
-        if self.clearButtonMode == .never || ( self.clearButtonMode == .whileEditing && self.text?.length == 0 ) {
+        if self.clearButtonMode == .never || ( self.clearButtonMode == .whileEditing && self.text?.tap_length == 0 ) {
 
             return textRect
         }
@@ -144,7 +145,7 @@ public class EditableTextInsetsTextField: TextField {
 
             if let selectedRange = self.selectedTextRange {
 
-                return (self.text(in: selectedRange)?.length ?? 0) > 0
+                return (self.text(in: selectedRange)?.tap_length ?? 0) > 0
 
             } else {
 
@@ -153,11 +154,11 @@ public class EditableTextInsetsTextField: TextField {
 
         } else if action == #selector(paste(_:)) {
 
-            return ( UIPasteboard.general.string?.length ?? 0 ) > 0
+            return ( UIPasteboard.general.string?.tap_length ?? 0 ) > 0
 
         } else if action == #selector(select(_:)) || action == #selector(selectAll(_:)) {
 
-            return ( self.text?.length ?? 0 ) > 0
+            return ( self.text?.tap_length ?? 0 ) > 0
 
         } else {
 
