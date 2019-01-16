@@ -14,11 +14,11 @@ import class    UIKit.UITextInput.UITextPosition
 /// Editable text insets text field.
 public class EditableTextInsetsTextField: TextField {
 
-    // MARK: - Public -
+	// MARK: - Public -
 
 	/*!
 	Describes position of clear button.
-	
+
 	- Left:  Clear button is on the left.
 	- Right: Clear button is on the right.
 	*/
@@ -28,141 +28,147 @@ public class EditableTextInsetsTextField: TextField {
 		case right
 	}
 
-    // MARK: Properties
+	// MARK: Properties
 
-    public var clearButtonPosition: ClearButtonPosition = .right {
+	public var clearButtonPosition: ClearButtonPosition = .right {
 
-        didSet {
+		didSet {
 
-            self.tap_layout()
-        }
-    }
+			guard self.clearButtonPosition != oldValue else { return }
 
-    /// Text insets.
-    public var textInsets: UIEdgeInsets = UIEdgeInsets.zero {
+			self.tap_layout()
+		}
+	}
 
-        didSet {
+	/// Text insets.
+	public var textInsets: UIEdgeInsets = UIEdgeInsets.zero {
 
-            self.tap_layout()
-        }
-    }
+		didSet {
 
-    /// Custom caret top and bottom inset.
-    public var customCaretInset: CGFloat? {
+			guard self.textInsets != oldValue else { return }
 
-        didSet {
+			self.tap_layout()
+		}
+	}
 
-            self.tap_layout()
-        }
-    }
+	/// Custom caret top and bottom inset.
+	public var customCaretInset: CGFloat? {
 
-    // MARK: Methods
+		didSet {
 
-    public override func caretRect(for position: UITextPosition) -> CGRect {
+			guard self.customCaretInset != oldValue else { return }
 
-        if let caretInset = self.customCaretInset {
+			self.tap_layout()
+		}
+	}
 
-            var caretRect = super.caretRect(for: position)
-            caretRect.origin.y = caretInset
-            caretRect.size.height = self.bounds.height - 2.0 * caretInset
+	// MARK: Methods
 
-            return caretRect
-        } else {
+	public override func caretRect(for position: UITextPosition) -> CGRect {
 
-            return super.caretRect(for: position)
-        }
-    }
+		if let caretInset = self.customCaretInset {
 
-    public override func textRect(forBounds aBounds: CGRect) -> CGRect {
+			var caretRect = super.caretRect(for: position)
+			caretRect.origin.y = caretInset
+			caretRect.size.height = self.bounds.height - 2.0 * caretInset
 
-        var textRect = aBounds
-        textRect.size.width = aBounds.width - self.textInsets.left - self.textInsets.right
-        textRect.origin.x = self.textInsets.left
-        textRect.size.height = aBounds.height - self.textInsets.top - self.textInsets.bottom
-        textRect.origin.y = self.textInsets.top
+			return caretRect
+		} else {
 
-        return textRect
-    }
+			return super.caretRect(for: position)
+		}
+	}
 
-    public override func editingRect(forBounds aBounds: CGRect) -> CGRect {
+	public override func textRect(forBounds aBounds: CGRect) -> CGRect {
 
-        var textRect = self.textRect(forBounds: aBounds)
-        if self.clearButtonMode == .never || ( self.clearButtonMode == .whileEditing && self.text?.tap_length == 0 ) {
+		var textRect = aBounds
+		textRect.size.width = aBounds.width - self.textInsets.left - self.textInsets.right
+		textRect.origin.x = self.textInsets.left
+		textRect.size.height = aBounds.height - self.textInsets.top - self.textInsets.bottom
+		textRect.origin.y = self.textInsets.top
 
-            return textRect
-        }
+		return textRect
+	}
 
-        let originalClearButtonRect = super.clearButtonRect(forBounds: aBounds)
-        let clearButtonRect = self.clearButtonRect(forBounds: aBounds)
+	public override func editingRect(forBounds aBounds: CGRect) -> CGRect {
 
-        let originalButtonIsOnTheLeft = originalClearButtonRect.midX < 0.5 * aBounds.width
-        let buttonIsOnTheLeft = self.clearButtonPosition == .left
+		var textRect = self.textRect(forBounds: aBounds)
+		if self.clearButtonMode == .never || ( self.clearButtonMode == .whileEditing && self.text?.tap_length == 0 ) {
 
-        var requiredDistanceBetweenTextAndButton: CGFloat = 0.0
-        if originalButtonIsOnTheLeft {
+			return textRect
+		}
 
-            requiredDistanceBetweenTextAndButton = originalClearButtonRect.minX - textRect.minX
-        } else {
+		let originalClearButtonRect = super.clearButtonRect(forBounds: aBounds)
+		let clearButtonRect = self.clearButtonRect(forBounds: aBounds)
 
-            requiredDistanceBetweenTextAndButton = textRect.maxX - originalClearButtonRect.maxX
-        }
+		let originalButtonIsOnTheLeft = originalClearButtonRect.midX < 0.5 * aBounds.width
+		let buttonIsOnTheLeft = self.clearButtonPosition == .left
 
-        if buttonIsOnTheLeft {
+		var requiredDistanceBetweenTextAndButton: CGFloat = 0.0
+		if originalButtonIsOnTheLeft {
 
-            let previousOrigin = textRect.minX
-            let origin = clearButtonRect.maxX + requiredDistanceBetweenTextAndButton
+			requiredDistanceBetweenTextAndButton = originalClearButtonRect.minX - textRect.minX
+		} else {
 
-            textRect.origin.x = origin
-            textRect.size.width -= origin - previousOrigin
-        } else {
+			requiredDistanceBetweenTextAndButton = textRect.maxX - originalClearButtonRect.maxX
+		}
 
-            textRect.size.width = clearButtonRect.minX - requiredDistanceBetweenTextAndButton - textRect.minX
-        }
+		if buttonIsOnTheLeft {
 
-        return textRect
-    }
+			let previousOrigin = textRect.minX
+			let origin = clearButtonRect.maxX + requiredDistanceBetweenTextAndButton
 
-    public override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
+			textRect.origin.x = origin
+			textRect.size.width -= origin - previousOrigin
+		} else {
 
-        var defaultClearButtonRect = super.clearButtonRect(forBounds: bounds)
-        if self.clearButtonPosition == .left {
+			textRect.size.width = clearButtonRect.minX - requiredDistanceBetweenTextAndButton - textRect.minX
+		}
 
-            defaultClearButtonRect.origin.x = textInsets.left
+		return textRect
+	}
 
-        } else {
+	public override func clearButtonRect(forBounds bounds: CGRect) -> CGRect {
 
-            let inset = self.textInsets.right
-            let positionDecrease = defaultClearButtonRect.maxX - bounds.width + inset
-            defaultClearButtonRect.origin.x -= positionDecrease
-        }
+		var defaultClearButtonRect = super.clearButtonRect(forBounds: bounds)
+		if self.clearButtonPosition == .left {
 
-        return defaultClearButtonRect
-    }
+			defaultClearButtonRect.origin.x = textInsets.left
 
-    public override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+		} else {
 
-        if action == #selector(copy(_:)) || action == #selector(cut(_:)) {
+			let inset = self.textInsets.right
+			let positionDecrease = defaultClearButtonRect.maxX - bounds.width + inset
+			defaultClearButtonRect.origin.x -= positionDecrease
+		}
 
-            if let selectedRange = self.selectedTextRange {
+		return defaultClearButtonRect
+	}
 
-                return (self.text(in: selectedRange)?.tap_length ?? 0) > 0
+	public override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
 
-            } else {
+		if action == #selector(copy(_:)) || action == #selector(cut(_:)) {
 
-                return false
-            }
+			if let selectedRange = self.selectedTextRange {
 
-        } else if action == #selector(paste(_:)) {
+				return (self.text(in: selectedRange)?.tap_length ?? 0) > 0
 
-            return ( UIPasteboard.general.string?.tap_length ?? 0 ) > 0
+			} else {
 
-        } else if action == #selector(select(_:)) || action == #selector(selectAll(_:)) {
+				return false
+			}
 
-            return ( self.text?.tap_length ?? 0 ) > 0
+		} else if action == #selector(paste(_:)) {
 
-        } else {
+			return ( UIPasteboard.general.string?.tap_length ?? 0 ) > 0
 
-            return false
-        }
-    }
+		} else if action == #selector(select(_:)) || action == #selector(selectAll(_:)) {
+
+			return ( self.text?.tap_length ?? 0 ) > 0
+
+		} else {
+
+			return false
+		}
+	}
 }

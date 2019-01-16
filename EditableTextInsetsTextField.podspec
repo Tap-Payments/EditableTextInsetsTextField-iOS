@@ -8,7 +8,7 @@ Pod::Spec.new do |editableTextInsetsTextField|
     editableTextInsetsTextField.name                    = 'EditableTextInsetsTextField'
     editableTextInsetsTextField.summary                 = 'UITextField subclass with editable text insets.'
     editableTextInsetsTextField.requires_arc            = true
-    editableTextInsetsTextField.version                 = '1.0.3'
+    editableTextInsetsTextField.version                 = '1.0.4'
     editableTextInsetsTextField.license                 = { :type => 'MIT', :file => 'LICENSE' }
     editableTextInsetsTextField.author                  = { 'Tap Payments' => 'hello@tap.company' }
     editableTextInsetsTextField.homepage                = 'https://github.com/Tap-Payments/EditableTextInsetsTextField-iOS'
